@@ -31,7 +31,7 @@ TERVEZES ES MUNKA FOLYAMAT:
 
 
 
-# 2 AdatBazis:
+# 2 AdatBazis + DOCKER:
 -------------
     --> Adatbaziskent PostgreSQL -t fogok hasznalni.
 
@@ -56,5 +56,14 @@ TERVEZES ES MUNKA FOLYAMAT:
 
 
 
+    --> AdatBazis EK - diagram tervezes (3NF -re)
+        * egyszeruseg kedveert par szabaly ami szerint mukkodik az adatbazis:
+            - egy szemelynek tobb jarmuve lehet, de egy jarmut csak egy szemely birtokol
+            - egy szemelynek csak egy szpecialis fieldje lehet, (nem lehet valaki fogyatekos es anyuka gyerekkel is)
+              (Ha feltetlenul szukseges lenne akkor kapcsolo szekrennyel 3NF ben tarthatnank a tablat)
+            - egy jarmu csak egy kategoriaba kerul (Kamion, gepjarmu, motorbicikli)  
+            - Van egy TiltoLista, ha valaki nem jelenik meg a foglalasara 15 percen belul, 
+              vagy ha nem hadja el a lefoglalt ido utan 15 percel a helyet.
+            - egy parkolohely lehet egy a kategoriak kozul (motorbicikli, gepjarmu, kamion)
 
 
