@@ -5,9 +5,19 @@
  |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
                   |_|
 
+
+
+
+
 *---------------------------------------------------------------*
 Ez a dokumentacio 100% kezzel, AI hasznalata nelkul volt irva.
 *---------------------------------------------------------------*
+
+
+
+
+TERVEZES ES MUNKA FOLYAMAT:
+--------------------------
 
 
 
@@ -36,5 +46,15 @@ Ez a dokumentacio 100% kezzel, AI hasznalata nelkul volt irva.
 
 
     --> Letrehoztam a fennebb emlitett shell scriptet, ami majd fogja futtatni a teljes programot.
+        egyenlore csak konnekcio tesztelest visz vegbe.
+
+    |EDDIGI BUGGOK ES MEGOLDASAI |
+    > Shell script elso soranak a rosz helyre rakasa miatt folyamatosan error 255-t kaptam
+    > docker-compose indentacio hibak miatt nem futott le tobbszor is
+    > rosz portot probaltam elerni, kijavitva 5432 -re 
+
+
+
+
 
 
