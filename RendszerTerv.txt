@@ -20,6 +20,16 @@ TERVEZES ES MUNKA FOLYAMAT:
 --------------------------
 
 
+IDE -- NEOVIM
+OS  -- ARCH Linux
+Stack {
+    Docker,
+    Shell,
+    PostgreSQL
+  }
+
+
+
 
 # 1 Github Repo letrehozasa:
 ---------------------------
@@ -66,4 +76,10 @@ TERVEZES ES MUNKA FOLYAMAT:
               vagy ha nem hadja el a lefoglalt ido utan 15 percel a helyet.
             - egy parkolohely lehet egy a kategoriak kozul (motorbicikli, gepjarmu, kamion)
 
+      --> EK diagram a repo gyokereben megtalalhato vektorialis formaban
 
+
+
+      --> Relacios tablak letrehozasa (tablak + kapcsolatok)
+
+      --> SQL file-ok megirasa az '/adatinit' mappaban

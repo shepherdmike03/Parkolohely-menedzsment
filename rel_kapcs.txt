@@ -1,0 +1,28 @@
+  ____  _                _                  _ __  __ _ _
+ / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____
+ \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \
+  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/
+ |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
+                  |_|
+
+
+
+*----------------------------*
+Relacios Tablak es kapcsolatok
+*----------------------------*
+
+1. kategoria(kategoria_id, kategoria_nev)
+
+2. specialis_status(specialis_status_id, specialis_status_nev)
+
+3. tulajdonos(tulajdonos_id, keresztnev, csaladnev, specialis_status_id)
+
+4. jarmu(jarmu_id,rendszam,tulajdonos_id,kategoria_id)
+
+5. parkolohely(parkolohely_id, hely_azonosito, aktiv, kategoria_id)
+
+6. tiltolista(tiltas_id, tiltas_ok, tiltas_kezdete, tiltas_vege, aktiv, tulajdonos_id)
+
+7. foglalas(foglalas_id, kezdet_ido, veg_ido, erkezes_ido, elhagyas_ido, letrehozva,jarmu_id,kategoria_id,parkolohely_id)
+
+
