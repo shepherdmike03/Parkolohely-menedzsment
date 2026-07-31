@@ -1,0 +1,40 @@
+  ____  _                _                  _ __  __ _ _
+ / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____
+ \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \
+  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/
+ |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
+                  |_|
+
+*---------------------------------------------------------------*
+Ez a dokumentacio 100% kezzel, AI hasznalata nelkul volt irva.
+*---------------------------------------------------------------*
+
+
+
+# 1 Github Repo letrehozasa:
+---------------------------
+    --> A publikus github repo elerheto a kovetkezo linken:
+
+        *************************************************************
+        https://github.com/shepherdmike03/Parkolohely-menedzsment.git
+        *************************************************************
+
+
+
+# 2 AdatBazis:
+-------------
+    --> Adatbaziskent PostgreSQL -t fogok hasznalni.
+
+
+    --> Letrehoztam egy Dockerfile.runner -t
+          > A kod olvashato, es kommentelt.
+
+
+    --> Letrehoztam egy | docker-compose.yml | file-t ami minden inditasnal elinditja az adatbazis service-t
+        es utanna elinditja a shell scriptet ami majd a programot fogja futtatni.
+          > A kod olvashato, es becsuletesen kommentelt.
+
+
+    --> Letrehoztam a fennebb emlitett shell scriptet, ami majd fogja futtatni a teljes programot.
+
+

@@ -1,0 +1,68 @@
+#  ____  _                _                  _ __  __ _ _
+# / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____
+# \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \
+#  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/
+# |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
+#                  |_|
+
+
+
+services:
+  #******************
+  #   POSTGRESQL
+  #******************
+  db:
+    image: postgres:18-trixie     # trixie picit nagyobb mint az alpine (amit az AI javasolna btw) de gyorsabb build-et eredmenyez!
+
+    environment:
+
+      POSTGRES_USER:      ${POSTGRES_USER:-sa}                    # standard user 'sa'
+      POSTGRES_PASSWORD:  ${POSTGRES_PASSWORD:-Kicsicica2026!}    # standard jelszo: 'Kicsicica2026!'
+      POSTGRES_DB:        ${POSTGRES_DB:-parkolo_foglalas}
+
+    volumes:
+      #eloszor is oldjuk meg hogy az adatok tuleljek a compose up ujra meg ujra futtatasat!
+      - pgdata:/var/lib/postgresql                      #itt mar volt is egy bug, az uj verzioban nincs szukseg a /data direktoryra
+      - ./docker/initdb:/docker-entrypoint-initdb.d     # az /initdb -be kerulnek a *.sql, *.sh fileok amik a sajat gepen maradnak kezdeti sema, adatfeltoltes
+                                                        # docker-entrypoint-initdb  Konteneren beluli specialis postgres konyvtar  --- egyszer lefuttat minden file-t ami ide van masolva
+
+    #pg_isready - vel ellenorizzuk 10 masodpercenkent hogy a szerver elfogad e konnekciot
+      #Csak akkor indul a runner ha az adatbazis valoban kesz.
+    healthcheck:
+      test:
+        ["CMD-SHELL", "pg_isready -U sa -d parkolo_foglalas"]
+      
+
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+#RUNNER
+  runner:
+    build:
+      context: .
+      dockerfile: Dockerfile.runner
+    #fuggoseg --> POSTGRES
+    depends_on:
+      db:
+        condition: service_healthy
+
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432  # Alapertelmezetten a POSTGRES ezen a porton figyel
+
+      DB_USER: ${POSTGRES_USER:-sa}
+      DB_PASS: ${POSTGRES_PASSWORD:-Kicsicica2026!}
+      DB_NAME: ${POSTGRES_DB:-parkolo_foglalas}
+
+    volumes:
+      - ./scripts:/scripts:ro        # innen fognak futni a scriptek
+    command: ["/scripts/startup.sh"]
+
+volumes:
+  pgdata:
+        
+
+
+
