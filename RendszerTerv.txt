@@ -26,6 +26,8 @@ Stack {
     Docker,
     Shell,
     PostgreSQL
+    Java
+    SpringFramework
   }
 
 
@@ -42,7 +44,7 @@ Stack {
 
 
 # 2 AdatBazis + DOCKER:
--------------
+-----------------------
     --> Adatbaziskent PostgreSQL -t fogok hasznalni.
 
 
@@ -104,6 +106,8 @@ Stack {
 
 
 
-
-
+# 3 API:
+--------
+      --> Letrehozok egy egyszeru HEALTH check-et eloszor, Java maven projekten belul.
+          Java 21
 
