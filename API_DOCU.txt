@@ -93,5 +93,13 @@ API hivasok + magyarazat:
       { . . .
 
 
-      
+********************
+POST /reservations
+GET  /reservations
+GET  /reservations/{id}
 
+POST /blacklist
+
+GET  /spots/free?from=...&to=...
+GET  /spots/occupancy?from=...&to=...
+*********************

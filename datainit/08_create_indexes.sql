@@ -6,6 +6,7 @@
                   |_|
 */
 
+
 CREATE INDEX idx_tulajdonos_specialis_status
   ON tulajdonos (specialis_status_id);
 
@@ -27,8 +28,7 @@ CREATE INDEX idx_foglalas_jarmu
 CREATE INDEX idx_foglalas_parkolohely
   ON foglalas (parkolohely_id);
 
-CREATE INDEX idx_foglalas_kategoria
-  ON foglalas (kategoria_id);
+/* EDIT: torolve a kategoria*/
 
 CREATE INDEX idx_foglalas_idoszak
   ON foglalas (kezdet_ido, veg_ido);
