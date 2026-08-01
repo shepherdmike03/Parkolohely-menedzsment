@@ -86,3 +86,24 @@ Stack {
 
       --> Osszecsatoltam a datainit mappat a docker-compose.yml illetve, atneveztem a 
           file-okat hogy numerikusan kovethetoek legyenek
+
+
+
+      **TESZTELVE, a kovetkezo tablak leteznek:** 
+
+         Schema |       Name       | Type  | Owner
+        --------+------------------+-------+-------
+         public | foglalas         | table | sa
+         public | jarmu            | table | sa
+         public | kategoria        | table | sa
+         public | parkolohely      | table | sa
+         public | specialis_status | table | sa
+         public | tiltolista       | table | sa
+         public | tulajdonos       | table | sa
+        (7 rows)
+
+
+
+
+
+
