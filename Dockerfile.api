@@ -1,0 +1,45 @@
+#  ____  _                _                  _ __  __ _ _
+# / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____
+# \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \
+#  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/
+# |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
+#                  |_|
+
+
+# 1 Build Stage
+FROM maven:3.9-eclipse-temurin-21-alpine AS build
+# csak az alpine van, szoval ezt hasznalom
+
+WORKDIR /build
+
+# eloszor a pom kerul bele hogy cache elotti legyen a dependency layer
+COPY api/pom.xml ./pom.xml
+
+RUN mvn dependency:go-offline
+
+#most masolhatjuk a kodot
+COPY api/src ./src 
+
+RUN mvn clean package -DskipTests
+
+
+
+
+
+# 2 Runtime Stage 
+FROM eclipse-temurin:21-jre-alpine
+
+
+WORKDIR /app
+
+#atmasolunk mindent a build folderbol a containerbe
+COPY --from=build \
+    /build/target/parkolo-api-0.0.1-SNAPSHOT.jar \
+    /app/parkolo-api.jar
+
+
+
+EXPOSE 3333
+#a port amin el tudjuk erni a container altal adott cimet localhost
+
+ENTRYPOINT ["java", "-jar", "/app/parkolo-api.jar"]

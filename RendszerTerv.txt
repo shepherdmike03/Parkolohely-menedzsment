@@ -112,3 +112,10 @@ Stack {
           Java 21
       --> A maven lefut hibatlanul!
       --> Curl-el teljesen el lehet erni az API-t
+
+
+      --> Letrehozok az API-nak egy sajat docker filet s bele rakom a compose-ba,
+        hogy amiutan az adatbazis elindult, induljon el az API is, es varja a kerest.
+
+      --> A multy stage dockerfile.api mukkodik, es dockerignore letrehozva  
+      --> Tesztelve es mukkodik, picit hosszas, de hibatlanul lefut! 
