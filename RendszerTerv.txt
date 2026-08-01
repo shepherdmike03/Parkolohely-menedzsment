@@ -135,3 +135,42 @@ Stack {
           GET  /list_spots   ---> Kilistazza a mostani spottokat 
           GET  /health       ---> mukkodik e?
 
+
+
+
+
+      --> Az algoritmust ugy irom hogy mindig figyelembe vegye a parkolohely teruletet (kategoria) es a jarmu
+          teruletet, (motor parkolhat kocsi helyre ha nincs motor hely, de kamion nem a motor helyre)
+          -> Eredetileg ugy irtam az SQL-t hogy ugyan az a kategoria lehet csak a parkolohelyen
+            es az ezt elfoglalo jarmuvon, ezt kijavitottam hogy motor pl parkolhasson kocsi helyen
+            ha nincs szabad motor hely.
+
+
+      --> Utkozesek lekezelese (00_extensions.sql)
+      --> SQL file-ok javitva, elkezdem a JAVA fileok megirasat
+          - javitottam a Kategoria.java filet hogy mukkodjon a meretSorrend el 
+          - letrehoztam az entityket (foglalas, tiltas, Jarmu, tulajdonos)
+          - letrehoztam es kijavitottam az eddigi repository reteget, illetve megirtam a helyes querryket
+          - megirtam a DTO kat (kegyetlen java-t irni Neovimben, de meglett) most megvannak a request-response 
+          - megirtam az exceptionokat is, minden fajta lekeresre, vagy konfliktre
+          - megvan a service layer, a leelenorzesekkel egyutt
+      
+
+      --> Teszteltem es mukkodnek az ujjonnan megirt api endpointok.
+          A kod kezzel lett irva olvashatoan es kommentelve
+      
+
+
+      ****************************************
+      Mivel kezzel irtam a java es Docker es shell kodokat
+      mindeddik tobb mint 15 oraja gepelek osszesen.
+      Mivel ido szukeben vagyok, a teszteseteket es 
+      futtathato klienst AI segitsegevel es szemelyes atnezessel fogom csinalni. 
+      Minden Ai segitett file tetejere bele lesz irva hogy +AI
+      ****************************************
+
+
+# 4. CLI: 
+--------
+      --> Ai segitve hoztam letre hogy aki majd teszteli a programot tudja konnyeden futtatni az API-t 
+

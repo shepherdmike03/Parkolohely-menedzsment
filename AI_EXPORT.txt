@@ -1,0 +1,12 @@
+### A projekt 80% at kezzel irtam (API, Docker, Shell)
+Viszont ido szuke miatt az utolso resznel pontosabban a Main kliensnel es a tesztelesnel
+
+
+Csatolom a prompt exportot:
+
+
+(/src mappat megadtam mint context)
+Use the context you got and create a small client that allows us to freely test these endpoints. Like a simple CLI, with the following options: 1. Foglalas kerese (asks for the needed info, name, car etc..) 2. Adat generalas (generates a bunch of data from the past, a lot of users, cars Blacklist etc..) 3. Kereses (this opens up a new terminal with new options on what he/she wants to search for? Car ? Spots? BlackList? Persons? Than a third terminal opens up as they want a list or to search for a specific id? If they want to enter an ID, do client based error handling so they can try again) 4. Foglalas Lemondasa (it lets the user delete their reservation) USE YAGNI Make it pretty and easy to navigate and understand, use terminal coloring so the text is colored!
+
+
+rendben most kerlek javits a python CLI-on, hogy lehessen az elso opcioval uj embert/nevet autot etc felvenni nem a meglevo adatok kozott keresgelni! illetve rakj egy vissza opciot minden submenunek

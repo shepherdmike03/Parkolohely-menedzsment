@@ -41,15 +41,27 @@ public class Kategoria{
 
 
             // A kategoria nev (Motorbicikli, Kamion, gepjarmu)
-  @Column(name="kategoria_nev",nullable = false, unique = false)
+  @Column(name="kategoria_nev",nullable = false, unique = false, length = 100)
   
   private String nev;
 
+  @Column(name="meret_sorrend", nullable = false)
+  private Integer meretSorrend;
 
 
   protected Kategoria() {}
-  
-        // lekerdezzuk az id-t
+ 
+
+  public Kategoria(
+    String nev,
+    Integer meretSorrend
+    ) 
+  {
+    this.nev = nev;
+    this.meretSorrend = meretSorrend;
+  }
+
+      // lekerdezzuk az id-t
   public Long getId() {
     return id;
   }
@@ -60,7 +72,10 @@ public class Kategoria{
   public String getNev() {
     return nev;
   }
-
+  
+  public Integer getMeretSorrend(){
+    return meretSorrend;
+  }
 
         // megadhatunk egy nevet
   public void setNev(String nev) {

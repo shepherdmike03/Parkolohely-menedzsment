@@ -1,0 +1,17 @@
+
+
+
+Ha a readme filebol megvan minden a gepeden, akkor a kovetkezot kell csinaljad:
+
+  sudo docker compose up --build
+
+(elinditja az adatbazist es az API-t)
+
+Utanna a tesztelest teheted Curl parancsokon keresztul (API_DOCU.txt)
+
+Vagy futtathatod a kliens alkalmazast
+  ./client/parkolo_cli.py
+
+Itt tesztelheted a kulombozo Api hivasokat (Kereses, lemondas, tiltoLista, Manualis vagy automatikus generalas)
+
+

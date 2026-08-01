@@ -1,15 +1,27 @@
-  ____  _                _                  _ __  __ _ _
- / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____
- \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \
-  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/
- |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
+  ____  _                _                  _ __  __ _ _                     _    ___ 
+ / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____     _       / \  |_ _|
+ \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \  _| |_    / _ \  | | 
+  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/ |_   _|  / ___ \ | | 
+ |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|   |_|   /_/   \_\___|
                   |_|
-
 *************************
 API hivasok + magyarazat:
 *************************
 
 
+
+--------------- 
+Az elso 3 endpoint leirasa kezzel keszult, csak utanna lett idomegtakaritas celjabol hasznalva AI
+AI altal megirt es szemelyesen ellenorzott endpoint lista az API hasznalatara
+---------------
+
+
+
+****************
+PROMPT:
+  (context [java codebase] + Az alap 3 endpoint dokumentacioja)
+  Ird meg a dokumentaciot, az eddig nem megemlitett endpointokra, megemlitve hasznukat, hasznalatukat, es a parancsokat illetve ezekre a vart kimenetet, pont ugy ahogy en csinaltam az API_DOCU.txt file-ban
+****************
 
 1. /health
     --> Leelenorizheto hogy mukkodik e az API, es varja e a kereseket
@@ -93,13 +105,424 @@ API hivasok + magyarazat:
       { . . .
 
 
-********************
-POST /reservations
-GET  /reservations
-GET  /reservations/{id}
+4. /blacklist_person
 
-POST /blacklist
+    --> egy bizonyos tulajdonost fel lehet rakni a tilto listara
+    --> meg kell adni a tulajdonos ID-jat
+    --> meg kell adni a tiltas okat
+    --> opcionalisan meg lehet adni a tiltas veget
+    --> ha a 'tiltasVege' null, 
+      akkor a tiltas hatarozatlan ideig ervenyes
+    --> ha a tulajdonos mar aktiv tiltason van,
+      akkor a szerver nem hoz letre meg egy tiltast
 
-GET  /spots/free?from=...&to=...
-GET  /spots/occupancy?from=...&to=...
-*********************
+
+          Parancs:
+            curl -s \
+              -X POST \
+              http://localhost:3333/blacklist_person \
+              -H "Content-Type: application/json" \
+              -d '{
+                "tulajdonosId": 1,
+                "ok": "tolvaj",
+                "tiltasVege": "2026-09-01T12:00:00Z"
+              }' | jq
+
+          Vart Kimenet:
+
+            {
+              "tiltasId": 1,
+              "tulajdonosId": 1,
+              "tulajdonosNev": "Elek Teszt",
+              "ok": "tolvaj",
+              "tiltasKezdete": "2026-08-02T00:50:00Z",
+              "tiltasVege": "2026-09-01T12:00:00Z",
+              "aktiv": true
+            }
+      
+
+       Hatarozatlan ideju tiltas:
+
+            curl -s \
+              -X POST \
+              http://localhost:3333/blacklist_person \
+              -H "Content-Type: application/json" \
+              -d '{
+                "tulajdonosId": 2,
+                "ok": "Kesett",
+                "tiltasVege": null
+              }' | jq
+
+
+        Ha a tulajdonos mar tiltva van:
+
+            {
+              "error": "A tulajdonos mar aktiv tiltas alatt all. Aktualis ok: tolvaj"
+            }
+
+
+5. /new_reservation
+
+    --> Egy bizonyos jarmuhoz lehet uj foglalast letrehozni.
+    --> Meg kell adni a jarmu ID-jat.
+    --> Meg kell adni a foglalas kezdeti es veg idopontjat.
+    --> A kezdeti idopont nem lehet multbeli.
+    --> A veg idopontnak kesobb kell lennie mint a kezdeti idopont.
+
+
+    --> A szerver automatikusan ellenorzi:
+
+          1. Letezik e a jarmu.
+          2. A jarmu tulajdonosa tiltott e.
+          3. Van e a jarmunek masik utkozo foglalasa.
+          4. Van e megfelelo meretu szabad parkolohely.
+          5. A kivalasztott parkolohely szabad e a megadott idopontban.
+
+
+    --> A szerver automatikusan a legkisebb megfelelo helyet valasztja ki.
+
+          Motor:
+            Motor hely
+              --> ha elfogy, Szemelyauto hely
+              --> ha az is elfogy, Teherauto hely
+
+          Szemelyauto:
+            Szemelyauto hely
+              --> ha elfogy, Teherauto hely
+
+          Teherauto:
+            Csak Teherauto hely
+
+
+    --> Tehat egy Szemelyauto NEM kaphat Motor helyet.
+    --> Egy Motor viszont kaphat nala nagyobb helyet.
+
+
+          Parancs:
+
+            curl -s \
+              -X POST \
+              http://localhost:3333/new_reservation \
+              -H "Content-Type: application/json" \
+              -d '{
+                "jarmuId": 1,
+                "kezdetIdo": "2026-08-03T10:00:00Z",
+                "vegIdo": "2026-08-03T12:00:00Z"
+              }' | jq
+
+
+          Vart Kimenet:
+
+            {
+              "elfogadva": true,
+              "foglalas": {
+                "foglalasId": 1,
+                "jarmuId": 1,
+                "rendszam": "MOTOR-001",
+                "tulajdonosId": 1,
+                "tulajdonosNev": "Elek Teszt",
+                "parkolohelyId": 1,
+                "helyAzonosito": "K1-A11B22C3",
+                "jarmuKategoria": "Motor",
+                "parkolohelyKategoria": "Motor",
+                "kezdetIdo": "2026-08-03T10:00:00Z",
+                "vegIdo": "2026-08-03T12:00:00Z",
+                "erkezesIdo": null,
+                "elhagyasIdo": null,
+                "letrehozva": "2026-08-02T00:55:00Z",
+                "allapot": "TERVEZETT"
+              }
+            }
+
+
+    --> A foglalas 'allapot' mezoje a kovetkezo lehet:
+
+          TERVEZETT
+            --> A foglalas kezdeti idopontja meg nem erkezett el.
+
+          ERKEZESRE_VAR
+            --> A foglalasi idoszak elkezdodott, de a jarmu meg nem erkezett meg.
+
+          PARKOL
+            --> A jarmu megerkezett, es jelenleg a parkoloban van.
+
+          LEZART
+            --> A jarmu elhagyta a parkolot.
+
+          LEJART
+            --> A foglalas vege elmult, de nem lett rendesen lezarva.
+
+
+
+
+    --> Ha a tulajdonos tiltva van:
+
+
+          Vart Kimenet:
+
+            {
+              "elfogadva": false,
+              "kod": "TULAJDONOS_TILTOTT",
+              "uzenet": "A jarmu tulajdonosa aktiv tiltas alatt all.",
+              "tiltasok": [
+                {
+                  "tiltasId": 1,
+                  "ok": "Tobbszori szabalysertes",
+                  "tiltasKezdete": "2026-08-02T00:50:00Z",
+                  "tiltasVege": "2026-09-01T12:00:00Z"
+                }
+              ]
+            }
+
+
+
+
+    --> Ha nincs megfelelo szabad hely:
+
+
+          Vart Kimenet:
+
+            {
+              "elfogadva": false,
+              "kod": "NINCS_MEGFELELO_HELY",
+              "uzenet": "A megadott idoszakra nincs megfelelo meretu szabad parkolohely.",
+              "tiltasok": []
+            }
+
+
+
+
+    --> Ha a jarmunek mar van utkozo foglalasa:
+
+
+          Vart Kimenet:
+
+            {
+              "elfogadva": false,
+              "kod": "JARMU_MAR_FOGLALT",
+              "uzenet": "A jarmunek mar van atfedo foglalasa.",
+              "tiltasok": []
+            }
+
+
+
+
+6. /free_spots
+
+    --> Kilistazza azokat a parkolohelyeket, amelyek a megadott idoszakban szabadok.
+    --> A 'from' parameter a vizsgalt idoszak kezdete.
+    --> A 'to' parameter a vizsgalt idoszak vege.
+    --> Opcionálisan megadhato egy 'jarmuId' is.
+    --> Ha van jarmuId, akkor csak a jarmu szamara megfelelo meretu helyeket listazza.
+
+
+          Minden szabad hely lekerdezese:
+
+            curl -s \
+              "http://localhost:3333/free_spots?from=2026-08-03T10:00:00Z&to=2026-08-03T12:00:00Z" \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "kezdetIdo": "2026-08-03T10:00:00Z",
+              "vegIdo": "2026-08-03T12:00:00Z",
+              "jarmuId": null,
+              "szabadHelyekSzama": 9,
+              "helyek": [
+                {
+                  "parkolohelyId": 2,
+                  "helyAzonosito": "K1-22AA33BB",
+                  "aktiv": true,
+                  "kategoriaId": 1,
+                  "kategoriaNev": "Motor"
+                },
+                {
+                  "parkolohelyId": 6,
+                  "helyAzonosito": "K2-44CC55DD",
+                  "aktiv": true,
+                  "kategoriaId": 2,
+                  "kategoriaNev": "Szemelyauto"
+                }
+              ]
+            }
+
+
+
+
+          Csak egy bizonyos jarmu szamara megfelelo helyek:
+
+            curl -s \
+              "http://localhost:3333/free_spots?jarmuId=1&from=2026-08-03T10:00:00Z&to=2026-08-03T12:00:00Z" \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "kezdetIdo": "2026-08-03T10:00:00Z",
+              "vegIdo": "2026-08-03T12:00:00Z",
+              "jarmuId": 1,
+              "szabadHelyekSzama": 9,
+              "helyek": [
+                {
+                  "parkolohelyId": 2,
+                  "helyAzonosito": "K1-22AA33BB",
+                  "aktiv": true,
+                  "kategoriaId": 1,
+                  "kategoriaNev": "Motor"
+                },
+                {
+                  "parkolohelyId": 6,
+                  "helyAzonosito": "K2-44CC55DD",
+                  "aktiv": true,
+                  "kategoriaId": 2,
+                  "kategoriaNev": "Szemelyauto"
+                }
+              ]
+            }
+
+
+
+
+7. /spot_status
+
+    --> Megmutatja hogy a megadott idoszakban hany parkolohely foglalt.
+    --> Megmutatja az osszes aktiv parkolohely szamat.
+    --> Megmutatja a szabad parkolohelyek szamat.
+    --> A szamolas csak az aktiv parkolohelyeket veszi figyelembe.
+
+
+          Parancs:
+
+            curl -s \
+              "http://localhost:3333/spot_status?from=2026-08-03T10:00:00Z&to=2026-08-03T12:00:00Z" \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "kezdetIdo": "2026-08-03T10:00:00Z",
+              "vegIdo": "2026-08-03T12:00:00Z",
+              "osszesAktivHely": 10,
+              "foglaltHely": 1,
+              "szabadHely": 9
+            }
+
+
+
+
+8. /list_reservations
+
+    --> Kilistazza az osszes eddig letrehozott foglalast.
+    --> A legutoljara letrehozott foglalas jelenik meg eloszor.
+    --> Kiirja a jarmu, a tulajdonos, a parkolohely es az idopontok adatait is.
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/list_reservations \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "osszesen": 2,
+              "foglalasok": [
+                {
+                  "foglalasId": 2,
+                  "jarmuId": 2,
+                  "rendszam": "ABC-123",
+                  "tulajdonosId": 2,
+                  "tulajdonosNev": "Gipsz Jakab",
+                  "parkolohelyId": 6,
+                  "helyAzonosito": "K2-44CC55DD",
+                  "jarmuKategoria": "Szemelyauto",
+                  "parkolohelyKategoria": "Szemelyauto",
+                  "kezdetIdo": "2026-08-04T08:00:00Z",
+                  "vegIdo": "2026-08-04T10:00:00Z",
+                  "erkezesIdo": null,
+                  "elhagyasIdo": null,
+                  "letrehozva": "2026-08-02T01:00:00Z",
+                  "allapot": "TERVEZETT"
+                },
+                {
+                  "foglalasId": 1,
+                  "jarmuId": 1,
+                  "rendszam": "MOTOR-001",
+                  "tulajdonosId": 1,
+                  "tulajdonosNev": "Elek Teszt",
+                  "parkolohelyId": 1,
+                  "helyAzonosito": "K1-A11B22C3",
+                  "jarmuKategoria": "Motor",
+                  "parkolohelyKategoria": "Motor",
+                  "kezdetIdo": "2026-08-03T10:00:00Z",
+                  "vegIdo": "2026-08-03T12:00:00Z",
+                  "erkezesIdo": null,
+                  "elhagyasIdo": null,
+                  "letrehozva": "2026-08-02T00:55:00Z",
+                  "allapot": "TERVEZETT"
+                }
+              ]
+            }
+
+
+
+
+9. /reservation/{id}
+
+    --> Egy bizonyos foglalast lehet lekerdezni a foglalas ID-ja alapjan.
+    --> Az URL-ben az '{id}' helyere a foglalas ID-jat kell irni.
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/reservation/1 \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "foglalasId": 1,
+              "jarmuId": 1,
+              "rendszam": "MOTOR-001",
+              "tulajdonosId": 1,
+              "tulajdonosNev": "Elek Teszt",
+              "parkolohelyId": 1,
+              "helyAzonosito": "K1-A11B22C3",
+              "jarmuKategoria": "Motor",
+              "parkolohelyKategoria": "Motor",
+              "kezdetIdo": "2026-08-03T10:00:00Z",
+              "vegIdo": "2026-08-03T12:00:00Z",
+              "erkezesIdo": null,
+              "elhagyasIdo": null,
+              "letrehozva": "2026-08-02T00:55:00Z",
+              "allapot": "TERVEZETT"
+            }
+
+
+
+
+    --> Ha nem letezik foglalas a megadott ID-val:
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/reservation/9999 \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "error": "Nem letezik foglalas ezzel az ID-val: 9999"
+            }
+
+
