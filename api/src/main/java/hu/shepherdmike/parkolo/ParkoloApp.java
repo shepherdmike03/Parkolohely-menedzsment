@@ -22,7 +22,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;  // importa
 public class ParkoloApp{
 // a main metodus meghivja a ParkoloApp-ot
   public static void main(String[] args){
-    SpringApplication.run(ParkoloApp.class,args)
+    SpringApplication.run(ParkoloApp.class,args);
   }
 }
 

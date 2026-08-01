@@ -110,4 +110,5 @@ Stack {
 --------
       --> Letrehozok egy egyszeru HEALTH check-et eloszor, Java maven projekten belul.
           Java 21
-
+      --> A maven lefut hibatlanul!
+      --> Curl-el teljesen el lehet erni az API-t
