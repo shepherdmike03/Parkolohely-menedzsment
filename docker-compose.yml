@@ -23,7 +23,7 @@ services:
     volumes:
       #eloszor is oldjuk meg hogy az adatok tuleljek a compose up ujra meg ujra futtatasat!
       - pgdata:/var/lib/postgresql                      #itt mar volt is egy bug, az uj verzioban nincs szukseg a /data direktoryra
-      - ./docker/initdb:/docker-entrypoint-initdb.d     # az /initdb -be kerulnek a *.sql, *.sh fileok amik a sajat gepen maradnak kezdeti sema, adatfeltoltes
+      - ./datainit:/docker-entrypoint-initdb.d:ro     # az /initdb -be kerulnek a *.sql, *.sh fileok amik a sajat gepen maradnak kezdeti sema, adatfeltoltes
                                                         # docker-entrypoint-initdb  Konteneren beluli specialis postgres konyvtar  --- egyszer lefuttat minden file-t ami ide van masolva
 
     #pg_isready - vel ellenorizzuk 10 masodpercenkent hogy a szerver elfogad e konnekciot

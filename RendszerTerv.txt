@@ -83,3 +83,6 @@ Stack {
       --> Relacios tablak letrehozasa (tablak + kapcsolatok)
 
       --> SQL file-ok megirasa az '/adatinit' mappaban
+
+      --> Osszecsatoltam a datainit mappat a docker-compose.yml illetve, atneveztem a 
+          file-okat hogy numerikusan kovethetoek legyenek

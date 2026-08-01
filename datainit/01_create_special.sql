@@ -9,7 +9,7 @@
 
 
 CREATE TABLE specialis_status (
-  specialis_status_id BEGIN GENERATED ALWAYS AS IDENTITY,         /*ID*/
+  specialis_status_id BIGINT GENERATED ALWAYS AS IDENTITY,         /*ID*/
   specialis_status_nev VARCHAR(100) NOT NULL,                     /*Terhes, dolgozo, vagy fogyatekos*/
 
 
