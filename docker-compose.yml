@@ -47,7 +47,17 @@ services:
     depends_on:
       db:
         condition: service_healthy          # fugg attol hogy az adatbazis fusson
-    
+
+
+
+        #Megadom a szukseges kornyezetet
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: ${POSTGRES_USER:-sa}
+      DB_PASS: ${POSTGRES_PASSWORD:-Kicsicica2026!}
+      DB_NAME: ${POSTGRES_DB:-parkolo_foglalas}
+
     ports:
       - "127.0.0.1:3333:3333"             # hogy localhoston elerhessuk a 3333 portot
     

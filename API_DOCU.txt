@@ -1,0 +1,97 @@
+  ____  _                _                  _ __  __ _ _
+ / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____
+ \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \
+  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/
+ |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
+                  |_|
+
+*************************
+API hivasok + magyarazat:
+*************************
+
+
+
+1. /health
+    --> Leelenorizheto hogy mukkodik e az API, es varja e a kereseket
+        
+        Parancs:
+          curl http://localhost:3333/health
+        
+        Vart Kimenet:
+          {"status":"healthy"}
+
+
+
+2. /new_spot
+    --> Letre lehet hozni vele uj parkolohelyeket.
+    --> Meg kell adni a 'DARAB' szamot (hogy hany parkolohely fog letezni [1 < n < 500])
+    --> Meg kell adni a kategoriaId -t ami lehet (1,2,3)
+               
+               kategoria_id | kategoria_nev
+              --------------+---------------
+                          1 | Szemelyauto
+                          2 | Motor
+                          3 | Teherauto
+              (3 rows)
+
+
+       * HA A KATEGORIAK VELETLENUL NEM GENERALODNAK LE, a  kovetkezo parancsal lehet oket insertelni.
+         
+                        sudo docker compose exec db \
+                        psql -U sa -d parkolo_foglalas \
+                        -c "
+                        INSERT INTO kategoria (kategoria_nev)
+                        VALUES
+                            ('Szemelyauto'),
+                            ('Motor'),
+                            ('Teherauto')
+                        RETURNING *;
+                        "
+
+
+          Parancs:
+            curl   -X POST   http://localhost:3333/new_spot   -H "Content-Type: application/json"   -d '{
+                "darab": 3,
+                "kategoriaId": 2
+            }'
+
+
+          Vart Kimenet:
+            {"letrehozottDarab":3,"letrehozottHelyek":[{"parkolohelyId":14,"helyAzonosito":"K2-86F12ABA","aktiv":true,"kategoriaId":2,"kategoriaNev":"Motor"},{"parkolohelyId":15,"helyAzonosito":"K2-EFA2F1FB","aktiv":true,"kategoriaId":2,"kategoriaNev":"Motor"},{"parkolohelyId":16,"helyAzonosito":"K2-83A95999","aktiv":true,"kategoriaId":2,"kategoriaNev":"Motor"}]}
+
+
+
+
+3. /list_spots
+
+    --> Kiirja a jelenlegi parkolohelyek listajat, minden infoval eggyutt.
+
+    parancs:
+      curl -s http://localhost:3333/list_spots | jq       
+
+          // Szepen formazva
+    
+    Vart Kimenet: 
+    
+      {
+        "osszesen": 16,
+        "helyek": [
+      {
+        "parkolohelyId": 1,
+        "helyAzonosito": "K1-8380C467",
+        "aktiv": true,
+        "kategoriaId": 1,
+        "kategoriaNev": "Szemelyauto"
+      },
+      {
+        "parkolohelyId": 2,
+        "helyAzonosito": "K1-08B1205D",
+        "aktiv": true,
+        "kategoriaId": 1,
+        "kategoriaNev": "Szemelyauto"
+      },
+      { . . .
+
+
+      
+

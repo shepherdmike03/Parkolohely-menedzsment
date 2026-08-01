@@ -1,2 +1,13 @@
 /home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/ParkoloApp.java
 /home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/controller/HealthController.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/controller/ParkolohelyController.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/dto/NewSpotRequest.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/dto/NewSpotResponse.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/dto/SpotListResponse.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/dto/SpotResponse.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/entity/Kategoria.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/entity/Parkolohely.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/exception/ApiExceptionHandler.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/repository/KategoriaRepository.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/repository/ParkolohelyRepository.java
+/home/shepherdmike/Desktop/work/unemployment/Sonrisa/parkolo-hely-foglalas/api/src/main/java/hu/shepherdmike/parkolo/service/ParkolohelyService.java

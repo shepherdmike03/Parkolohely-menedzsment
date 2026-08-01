@@ -118,4 +118,16 @@ Stack {
         hogy amiutan az adatbazis elindult, induljon el az API is, es varja a kerest.
 
       --> A multy stage dockerfile.api mukkodik, es dockerignore letrehozva  
-      --> Tesztelve es mukkodik, picit hosszas, de hibatlanul lefut! 
+      --> Tesztelve es mukkodik, picit hosszas, de hibatlanul lefut!
+
+
+      --> Most letrehozok ket endpointot (beszurni uj helyet, listazni a mar letezo helyeket)
+          - Uj dependency-ket raktam a pom.xml be (hogy tudjuk csatlakozni az adatbazishoz etc..)
+
+
+      --> Megirtam a repositorykat, a DTO-t, es a valasz modelleket (Java es a csodallatos fileTree retegek :C ) 
+          Illetve a service es a controller file-okat is.
+          Konnyen olvashatoan vannak megirva.
+
+
+
