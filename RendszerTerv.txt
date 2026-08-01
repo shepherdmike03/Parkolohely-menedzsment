@@ -129,5 +129,9 @@ Stack {
           Illetve a service es a controller file-okat is.
           Konnyen olvashatoan vannak megirva.
 
-
+      --> Az API jelenleg tokeletesen mukkodik a kovetkezo endpointokra:
+          
+          POST /new_spot     ---> Letrehoz uj parkolohelyeket (kategoriaID, kategoriaNev, ParkolohelyID,azonosito,aktiv)
+          GET  /list_spots   ---> Kilistazza a mostani spottokat 
+          GET  /health       ---> mukkodik e?
 
