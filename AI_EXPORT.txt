@@ -10,3 +10,6 @@ Use the context you got and create a small client that allows us to freely test 
 
 
 rendben most kerlek javits a python CLI-on, hogy lehessen az elso opcioval uj embert/nevet autot etc felvenni nem a meglevo adatok kozott keresgelni! illetve rakj egy vissza opciot minden submenunek
+
+
+Hozz letre a jelenlegi endpointokra egy tester scriptet, ami leelenorzi hogy helyesen mukkodnek e

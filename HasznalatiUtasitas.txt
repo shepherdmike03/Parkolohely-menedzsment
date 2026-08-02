@@ -1,3 +1,10 @@
+  ____  _                _                  _ __  __ _ _
+ / ___|| |__   ___ _ __ | |__   ___ _ __ __| |  \/  (_) | _____
+ \___ \| '_ \ / _ \ '_ \| '_ \ / _ \ '__/ _` | |\/| | | |/ / _ \
+  ___) | | | |  __/ |_) | | | |  __/ | | (_| | |  | | |   <  __/
+ |____/|_| |_|\___| .__/|_| |_|\___|_|  \__,_|_|  |_|_|_|\_\___|
+                  |_|
+
 
 
 
@@ -6,6 +13,7 @@ Ha a readme filebol megvan minden a gepeden, akkor a kovetkezot kell csinaljad:
   sudo docker compose up --build
 
 (elinditja az adatbazist es az API-t)
+ha ugyan azt a terminalt szeretned hasznalni hasznald a -d a build utan, igy visszaadja a terminalt.
 
 Utanna a tesztelest teheted Curl parancsokon keresztul (API_DOCU.txt)
 

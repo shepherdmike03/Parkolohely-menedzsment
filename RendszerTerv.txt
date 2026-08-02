@@ -173,4 +173,38 @@ Stack {
 # 4. CLI: 
 --------
       --> Ai segitve hoztam letre hogy aki majd teszteli a programot tudja konnyeden futtatni az API-t 
+      --> Segitsegevel sokkal konnyebb lesz tesztelni a munkamat. A leirasnak minden feltetelere valaszt tud nyujtani.
+
+
+
+
+
+
+
+
+# 5. Testing
+------------
+        --> Van egy egyszeru tester script a client/ direktoriban, ez egyszeru esetekre es basic edge case-ekre teszteli
+            az endpointokat.
+
+
+
+# 6. Min lehetne meg fejleszteni?
+        --> Specialis status (fogyatek, anyuka, etc..) keruljenek csak bizonyos spottokra
+        --> Test coverage sql Injection + Dos + DDoS tamadasokra is (connection pooling)
+        --> Egy folyamatos scriptel futtatni az egeszet
+        --> Rakhatnek bele easter eggeket (007 - es Id lehetne automatikusan James Bond)
+        --> Hasznalhatnek a CLI-ban ASCHI ART -ot, igy vonzobb lenne hasznalni.
+
+
+
+********************************************************
+Uzenet a szemelynek aki az en munkamat fogja ellenorizni
+********************************************************
+
+      -- Koszonom a lehetoseget. Ez a projekt igen sok idot vett igenybe, es koszonom a szivem melyerol, 
+      hogy idot es energiat szantal ra hogy elolvasd es kiprobald.
+
+      ~ ShepherdMike,
+      AKA Pasztor Miklos
 

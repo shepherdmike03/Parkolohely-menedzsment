@@ -526,3 +526,511 @@ PROMPT:
             }
 
 
+
+
+10. DELETE /reservation/{id}
+
+    --> Egy bizonyos foglalast lehet lemondani / torolni a foglalas ID-ja alapjan.
+    --> Az URL-ben az '{id}' helyere a foglalas ID-jat kell irni.
+    --> Csak olyan foglalast lehet lemondani, amely meg nem kezdodott el.
+    --> Sikeres torlesnel a szerver 204 No Content valaszt ad, tehat nem kuld vissza JSON-t.
+
+
+          Parancs:
+
+            curl -i \
+              -X DELETE \
+              http://localhost:3333/reservation/1
+
+
+          Vart Kimenet:
+
+            HTTP/1.1 204 No Content
+
+
+    --> Ha nem letezik foglalas a megadott ID-val:
+
+
+          Vart Kimenet:
+
+            {
+              "error": "nem letezik foglalas ezzel az ID-val: 9999"
+            }
+
+
+    --> Ha a foglalas mar elkezdodott, vagy a jarmu mar megerkezett:
+
+
+          Vart Kimenet:
+
+            {
+              "error": "csak meg el nem kezdodott foglalas mondhato le"
+            }
+
+
+
+
+11. /categories
+
+    --> Kilistazza az adatbazisban letezo jarmu kategoriakat.
+    --> Kiirja a kategoria ID-jat, nevet, es a meret sorrendjet.
+    --> A kisebb 'meretSorrend' ertek kisebb jarmu kategoriat jelent.
+    --> Az uj szemely + jarmu regisztralasnal innen lehet megtudni a hasznalhato kategoria ID-kat.
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/categories \
+              | jq
+
+
+          Vart Kimenet:
+
+            [
+              {
+                "kategoriaId": 2,
+                "kategoriaNev": "Motor",
+                "meretSorrend": 1
+              },
+              {
+                "kategoriaId": 1,
+                "kategoriaNev": "Szemelyauto",
+                "meretSorrend": 2
+              },
+              {
+                "kategoriaId": 3,
+                "kategoriaNev": "Teherauto",
+                "meretSorrend": 3
+              }
+            ]
+
+
+
+
+12. /register_customer_vehicle
+
+    --> Egyszerre lehet vele letrehozni egy uj tulajdonost, es a tulajdonoshoz egy uj jarmuvet.
+    --> Meg kell adni a keresztnevet es a csaladnevet.
+    --> Meg kell adni a jarmu rendszamat.
+    --> Meg kell adni a jarmu kategoria ID-jat.
+    --> A 'specialisStatusId' jelenleg lehet null.
+    --> A rendszam automatikusan nagybetusitve lesz elmentve.
+    --> Ha a rendszam mar letezik, a szerver nem hoz letre meg egy ugyanolyan jarmuvet.
+
+
+          Parancs:
+
+            curl -s \
+              -X POST \
+              http://localhost:3333/register_customer_vehicle \
+              -H "Content-Type: application/json" \
+              -d '{
+                "keresztnev": "Jakab",
+                "csaladnev": "Gipsz",
+                "specialisStatusId": null,
+                "kategoriaId": 1,
+                "rendszam": "abc-123"
+              }' | jq
+
+
+          Vart Kimenet:
+
+            {
+              "tulajdonosId": 2,
+              "tulajdonosNev": "Gipsz Jakab",
+              "jarmuId": 2,
+              "rendszam": "ABC-123",
+              "kategoriaId": 1,
+              "kategoriaNev": "Szemelyauto"
+            }
+
+
+    --> Ha a rendszam mar letezik:
+
+
+          Vart Kimenet:
+
+            {
+              "error": "mar letezik jarmu ezzel a rendszammal: ABC-123"
+            }
+
+
+
+
+13. /dev/generate_data
+
+    --> Nagyobb mennyisegu tesztadatot lehet vele generalni az adatbazisba.
+    --> Letrehoz tulajdonosokat, jarmuveket, parkolohelyeket, tiltasokat es multbeli foglalasokat.
+    --> Ez egy fejlesztoi endpoint, tehat production kornyezetben nem ajanlott szabadon elerhetove tenni.
+
+
+    --> Meg kell adni:
+
+          persons
+            --> Hany uj tulajdonost hozzon letre.
+            --> Minimum 1, maximum 1000.
+
+          vehiclesPerPerson
+            --> Hany jarmuvet hozzon letre minden uj tulajdonoshoz.
+            --> Minimum 1, maximum 5.
+
+          spotsPerCategory
+            --> Hany uj parkolohelyet hozzon letre kategoriankent.
+            --> Minimum 0, maximum 200.
+
+          pastReservations
+            --> Hany multbeli foglalast hozzon letre.
+            --> Minimum 0, maximum 5000.
+
+          blacklistPercent
+            --> Az uj tulajdonosok hany szazaleka keruljon tiltolistara.
+            --> Minimum 0, maximum 100.
+
+
+          Parancs:
+
+            curl -s \
+              -X POST \
+              http://localhost:3333/dev/generate_data \
+              -H "Content-Type: application/json" \
+              -d '{
+                "persons": 50,
+                "vehiclesPerPerson": 2,
+                "spotsPerCategory": 20,
+                "pastReservations": 60,
+                "blacklistPercent": 10
+              }' | jq
+
+
+          Vart Kimenet:
+
+            {
+              "batchId": "MEL9JX5A",
+              "categoriesUsed": 3,
+              "personsCreated": 50,
+              "vehiclesCreated": 100,
+              "spotsCreated": 60,
+              "blacklistsCreated": 5,
+              "pastReservationsCreated": 60
+            }
+
+
+    --> A 'batchId' az adott generalasi muvelet egyedi azonositoja.
+    --> A visszateritett darabszamok megmutatjak hogy valojaban hany rekord lett letrehozva.
+
+
+
+
+14. /search/persons
+
+    --> Tulajdonosokat lehet vele kilistazni, vagy szoveg alapjan keresni.
+    --> A 'q' parameter opcionalis.
+    --> Ha a 'q' nincs megadva, vagy ures, akkor minden tulajdonost kilistaz.
+    --> Lehet keresni nev alapjan, nevreszlet alapjan, vagy a tulajdonos ID-ja alapjan.
+
+
+          Minden tulajdonos kilistazasa:
+
+            curl -s \
+              "http://localhost:3333/search/persons" \
+              | jq
+
+
+          Kereses nev alapjan:
+
+            curl -s \
+              "http://localhost:3333/search/persons?q=Gipsz" \
+              | jq
+
+
+          Vart Kimenet:
+
+            [
+              {
+                "tulajdonosId": 2,
+                "nev": "Gipsz Jakab",
+                "specialisStatusId": null
+              }
+            ]
+
+
+    --> Ha nincs talalat, a szerver ures listat ad vissza:
+
+            []
+
+
+
+
+15. /search/persons/{id}
+
+    --> Egy bizonyos tulajdonost lehet lekerdezni a tulajdonos ID-ja alapjan.
+    --> Az URL-ben az '{id}' helyere a tulajdonos ID-jat kell irni.
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/search/persons/2 \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "tulajdonosId": 2,
+              "nev": "Gipsz Jakab",
+              "specialisStatusId": null
+            }
+
+
+    --> Ha nem letezik tulajdonos a megadott ID-val:
+
+
+          Vart Kimenet:
+
+            {
+              "error": "nem letezik tulajdonos ezzel az ID-val: 9999"
+            }
+
+
+
+
+16. /search/vehicles
+
+    --> Jarmuveket lehet vele kilistazni, vagy szoveg alapjan keresni.
+    --> A 'q' parameter opcionalis.
+    --> Ha a 'q' nincs megadva, vagy ures, akkor minden jarmuvet kilistaz.
+    --> Lehet keresni rendszam, tulajdonos nev, kategoria nev, vagy jarmu ID alapjan.
+
+
+          Minden jarmu kilistazasa:
+
+            curl -s \
+              "http://localhost:3333/search/vehicles" \
+              | jq
+
+
+          Kereses rendszam alapjan:
+
+            curl -s \
+              "http://localhost:3333/search/vehicles?q=ABC-123" \
+              | jq
+
+
+          Vart Kimenet:
+
+            [
+              {
+                "jarmuId": 2,
+                "rendszam": "ABC-123",
+                "tulajdonosId": 2,
+                "tulajdonosNev": "Gipsz Jakab",
+                "kategoriaId": 1,
+                "kategoriaNev": "Szemelyauto"
+              }
+            ]
+
+
+    --> Ha nincs talalat, a szerver ures listat ad vissza:
+
+            []
+
+
+
+
+17. /search/vehicles/{id}
+
+    --> Egy bizonyos jarmuvet lehet lekerdezni a jarmu ID-ja alapjan.
+    --> A tulajdonos es a kategoria adatait is visszaadja.
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/search/vehicles/2 \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "jarmuId": 2,
+              "rendszam": "ABC-123",
+              "tulajdonosId": 2,
+              "tulajdonosNev": "Gipsz Jakab",
+              "kategoriaId": 1,
+              "kategoriaNev": "Szemelyauto"
+            }
+
+
+    --> Ha nem letezik jarmu a megadott ID-val:
+
+
+          Vart Kimenet:
+
+            {
+              "error": "nem letezik jarmu ezzel az ID-val: 9999"
+            }
+
+
+
+
+18. /search/spots
+
+    --> Parkolohelyeket lehet vele kilistazni, vagy szoveg alapjan keresni.
+    --> A 'q' parameter opcionalis.
+    --> Ha a 'q' nincs megadva, vagy ures, akkor minden parkolohelyet kilistaz.
+    --> Lehet keresni a hely azonositoja, kategoria neve, vagy parkolohely ID alapjan.
+
+
+          Minden parkolohely kilistazasa:
+
+            curl -s \
+              "http://localhost:3333/search/spots" \
+              | jq
+
+
+          Kereses a hely azonositoja alapjan:
+
+            curl -s \
+              "http://localhost:3333/search/spots?q=K1-A11B22C3" \
+              | jq
+
+
+          Vart Kimenet:
+
+            [
+              {
+                "parkolohelyId": 1,
+                "helyAzonosito": "K1-A11B22C3",
+                "aktiv": true,
+                "kategoriaId": 1,
+                "kategoriaNev": "Szemelyauto"
+              }
+            ]
+
+
+    --> Ha nincs talalat, a szerver ures listat ad vissza:
+
+            []
+
+
+
+
+19. /search/spots/{id}
+
+    --> Egy bizonyos parkolohelyet lehet lekerdezni a parkolohely ID-ja alapjan.
+    --> Kiirja a hely azonositojat, aktiv allapotat es kategoriajat is.
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/search/spots/1 \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "parkolohelyId": 1,
+              "helyAzonosito": "K1-A11B22C3",
+              "aktiv": true,
+              "kategoriaId": 1,
+              "kategoriaNev": "Szemelyauto"
+            }
+
+
+    --> Ha nem letezik parkolohely a megadott ID-val:
+
+
+          Vart Kimenet:
+
+            {
+              "error": "nem letezik parkolohely ezzel az ID-val: 9999"
+            }
+
+
+
+
+20. /search/blacklist
+
+    --> A tiltolista bejegyzeseit lehet vele kilistazni, vagy szoveg alapjan keresni.
+    --> A 'q' parameter opcionalis.
+    --> Ha a 'q' nincs megadva, vagy ures, akkor minden tiltas bejegyzest kilistaz.
+    --> Lehet keresni a tulajdonos neve, a tiltas oka, a tiltas ID-ja, vagy a tulajdonos ID-ja alapjan.
+    --> Az 'aktiv' mezo azt mutatja meg hogy a tiltas jelenleg meg ervenyes e.
+
+
+          Minden tiltas kilistazasa:
+
+            curl -s \
+              "http://localhost:3333/search/blacklist" \
+              | jq
+
+
+          Kereses a tulajdonos neve alapjan:
+
+            curl -s \
+              "http://localhost:3333/search/blacklist?q=Elek" \
+              | jq
+
+
+          Vart Kimenet:
+
+            [
+              {
+                "tiltasId": 1,
+                "tulajdonosId": 1,
+                "tulajdonosNev": "Elek Teszt",
+                "ok": "tolvaj",
+                "tiltasKezdete": "2026-08-02T00:50:00Z",
+                "tiltasVege": "2026-09-01T12:00:00Z",
+                "aktiv": true
+              }
+            ]
+
+
+    --> Ha nincs talalat, a szerver ures listat ad vissza:
+
+            []
+
+
+
+
+21. /search/blacklist/{id}
+
+    --> Egy bizonyos tiltas bejegyzest lehet lekerdezni a tiltas ID-ja alapjan.
+    --> Kiirja a tulajdonos adatait, a tiltas okat, idopontjait es jelenlegi allapotat.
+
+
+          Parancs:
+
+            curl -s \
+              http://localhost:3333/search/blacklist/1 \
+              | jq
+
+
+          Vart Kimenet:
+
+            {
+              "tiltasId": 1,
+              "tulajdonosId": 1,
+              "tulajdonosNev": "Elek Teszt",
+              "ok": "tolvaj",
+              "tiltasKezdete": "2026-08-02T00:50:00Z",
+              "tiltasVege": "2026-09-01T12:00:00Z",
+              "aktiv": true
+            }
+
+
+    --> Ha nem letezik tiltas a megadott ID-val:
+
+
+          Vart Kimenet:
+
+            {
+              "error": "nem letezik tiltas ezzel az ID-val: 9999"
+            }
+
